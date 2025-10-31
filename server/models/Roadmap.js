@@ -69,4 +69,4 @@ const roadmapSchema = new mongoose.Schema({
 // Index for faster queries
 roadmapSchema.index({ userId: 1 });
 
-module.exports = mongoose.model('Roadmap', roadmapSchema);
+module.exports = mongoose.models.Roadmap || mongoose.model('Roadmap', roadmapSchema);

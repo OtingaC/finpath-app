@@ -56,4 +56,4 @@ const financialItemSchema = new mongoose.Schema({
 // Index for faster queries
 financialItemSchema.index({ userId: 1 });
 
-module.exports = mongoose.model('FinancialItem', financialItemSchema);
+module.exports = mongoose.models.FinancialItem || mongoose.model('FinancialItem', financialItemSchema);

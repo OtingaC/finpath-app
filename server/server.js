@@ -26,8 +26,8 @@ app.get('/', (req, res) => {
   res.json({ message: 'Welcome to FinPath API' });
 });
 
-// Routes (we'll add these as we build)
-// app.use('/api/auth', require('./routes/auth'));
+// Routes
+app.use('/api/auth', require('./routes/auth'));
 // app.use('/api/users', require('./routes/users'));
 // app.use('/api/financial-items', require('./routes/financialItems'));
 // app.use('/api/goals', require('./routes/goals'));

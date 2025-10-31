@@ -51,4 +51,4 @@ goalSchema.index({ userId: 1 });
 // Ensure user can't have duplicate goals
 goalSchema.index({ userId: 1, goalType: 1 }, { unique: true });
 
-module.exports = mongoose.model('Goal', goalSchema);
+module.exports = mongoose.models.Goal || mongoose.model('Goal', goalSchema);
