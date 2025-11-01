@@ -1,7 +1,7 @@
 const Roadmap = require('../models/Roadmap');
 const FinancialItem = require('../models/FinancialItem');
 const Goal = require('../models/Goal');
-const User = require('../models/user');
+const User = require('../models/User.js');
 const { generateRoadmap } = require('../utils/roadmapGenerator');
 
 // GET user's roadmap (generates if doesn't exist)
