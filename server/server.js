@@ -30,8 +30,8 @@ app.get('/', (req, res) => {
 app.use('/api/auth', require('./routes/auth'));
 // app.use('/api/users', require('./routes/users'));
 app.use('/api/financial-items', require('./routes/financialItems'));
-// app.use('/api/goals', require('./routes/goals'));
-// app.use('/api/roadmap', require('./routes/roadmap'));
+app.use('/api/goals', require('./routes/goals'));
+app.use('/api/roadmap', require('./routes/roadmap'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
