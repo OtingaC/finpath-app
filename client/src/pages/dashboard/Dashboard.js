@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import { getFinancialItems, getRoadmap } from '../../utils/api';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 const Dashboard = () => {
   const { user, logout } = useContext(AuthContext);
@@ -97,19 +98,19 @@ const Dashboard = () => {
           <div className="bg-white rounded-lg shadow p-6">
             <p className="text-sm text-gray-600 mb-2">Total Assets</p>
             <p className="text-2xl font-bold text-accent-600">
-              KES{summary?.totalAssets?.toFixed(2) || '0.00'}
+              {formatCurrency(summary?.totalAssets || 0)}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-6">
             <p className="text-sm text-gray-600 mb-2">Total Liabilities</p>
             <p className="text-2xl font-bold text-red-600">
-              KES{summary?.totalLiabilities?.toFixed(2) || '0.00'}
+              {formatCurrency(summary?.totalLiabilities || 0)}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-6">
             <p className="text-sm text-gray-600 mb-2">Net Worth</p>
             <p className={`text-2xl font-bold ${summary?.netWorth >= 0 ? 'text-accent-600' : 'text-blue-600'}`}>
-              KES{summary?.netWorth?.toFixed(2) || '0.00'}
+              {formatCurrency(summary?.netWorth || 0)}
             </p>
           </div>
           <div className="bg-white rounded-lg shadow p-6">

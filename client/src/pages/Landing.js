@@ -1,124 +1,197 @@
-import { Link } from 'react-router-dom';
-import { useContext } from 'react';
+import { useState, useEffect, useContext } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../context/AuthContext';
+import { getFinancialItems, getRoadmap } from '../utils/api';
+import { formatCurrency } from '../utils/formatCurrency';
 
-const Landing = () => {
-  const { user } = useContext(AuthContext);
+const Dashboard = () => {
+  const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [summary, setSummary] = useState(null);
+  const [roadmap, setRoadmap] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    loadDashboardData();
+  }, []);
+
+  const loadDashboardData = async () => {
+    try {
+      // Get financial summary
+      const financialData = await getFinancialItems();
+      setSummary(financialData.summary);
+
+      // Try to get roadmap
+      try {
+        const roadmapData = await getRoadmap();
+        setRoadmap(roadmapData.roadmap);
+      } catch (err) {
+        // Roadmap doesn't exist yet
+        setRoadmap(null);
+      }
+    } catch (error) {
+      console.error('Error loading dashboard:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleLogout = () => {
+    logout();
+    navigate('/');
+  };
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-gray-600">Loading...</div>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-primary-500 via-primary-600 to-primary-700">
+    <div className="min-h-screen bg-gray-50">
       {/* Navbar */}
       <nav className="bg-white shadow-md">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex justify-between h-16 items-center">
-            <div className="flex items-center">
+            <div className="flex items-center space-x-8">
               <h1 className="text-2xl font-bold text-primary-600">FinPath</h1>
-            </div>
-            <div className="flex space-x-4">
-              {user ? (
-                <Link 
-                  to="/dashboard"
-                  className="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 transition"
-                >
-                  Go to Dashboard
+              <div className="hidden md:flex space-x-4">
+                <Link to="/dashboard" className="text-primary-600 font-medium px-3 py-2">
+                  Dashboard
                 </Link>
-              ) : (
-                <>
-                  <Link 
-                    to="/login"
-                    className="text-gray-700 hover:text-primary-600 px-3 py-2 rounded-md text-sm font-medium"
-                  >
-                    Login
-                  </Link>
-                  <Link 
-                    to="/register"
-                    className="bg-primary-500 text-white px-4 py-2 rounded-md hover:bg-primary-600 transition"
-                  >
-                    Get Started
-                  </Link>
-                </>
-              )}
+                <Link to="/financial-items" className="text-gray-700 hover:text-primary-600 px-3 py-2">
+                  Financial Items
+                </Link>
+                <Link to="/goals" className="text-gray-700 hover:text-primary-600 px-3 py-2">
+                  Goals
+                </Link>
+                <Link to="/roadmap" className="text-gray-700 hover:text-primary-600 px-3 py-2">
+                  Roadmap
+                </Link>
+              </div>
+            </div>
+            <div className="flex items-center space-x-4">
+              <span className="text-gray-700">Hello, {user?.name}</span>
+              <button
+                onClick={handleLogout}
+                className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600 transition"
+              >
+                Logout
+              </button>
             </div>
           </div>
         </div>
       </nav>
 
-      {/* Hero Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-        <div className="text-center">
-          <h1 className="text-5xl md:text-6xl font-bold text-white mb-6">
-            Navigate Your Financial Future
-          </h1>
-          <p className="text-xl md:text-2xl text-primary-100 mb-8 max-w-3xl mx-auto">
-            Master your money game and achieve financial freedom by understanding what builds wealth vs. what drains it
-          </p>
-          <div className="flex justify-center space-x-4">
-            <Link 
-              to="/register"
-              className="bg-accent-500 text-white px-8 py-4 rounded-lg text-lg font-semibold hover:bg-accent-600 transition shadow-lg"
-            >
-              Start Your Journey
-            </Link>
-            <Link 
-              to="/login"
-              className="bg-white text-primary-600 px-8 py-4 rounded-lg text-lg font-semibold hover:bg-gray-100 transition shadow-lg"
-            >
-              Login
-            </Link>
-          </div>
+      {/* Main Content */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        {/* Welcome Section */}
+        <div className="mb-8">
+          <h2 className="text-3xl font-bold text-gray-900">Welcome back, {user?.name}! 👋</h2>
+          <p className="text-gray-600 mt-2">Here's your financial overview</p>
         </div>
 
-        {/* Features */}
-        <div className="mt-20 grid md:grid-cols-3 gap-8">
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <div className="text-4xl mb-4">📊</div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
-              Track Assets & Liabilities
-            </h3>
-            <p className="text-gray-600">
-              Understand the difference between what builds wealth and what drains it
+        {/* Financial Summary Cards */}
+        <div className="grid md:grid-cols-4 gap-6 mb-8">
+          <div className="bg-white rounded-lg shadow p-6">
+            <p className="text-sm text-gray-600 mb-2">Total Assets</p>
+            <p className="text-2xl font-bold text-accent-600">
+              ${summary?.totalAssets?.toFixed(2) || '0.00'}
             </p>
           </div>
-
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <div className="text-4xl mb-4">🎯</div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
-              Set Financial Goals
-            </h3>
-            <p className="text-gray-600">
-              Define your path: investing, business, passive income, or early retirement
+          <div className="bg-white rounded-lg shadow p-6">
+            <p className="text-sm text-gray-600 mb-2">Total Liabilities</p>
+            <p className="text-2xl font-bold text-red-600">
+              ${summary?.totalLiabilities?.toFixed(2) || '0.00'}
             </p>
           </div>
-
-          <div className="bg-white rounded-lg p-6 shadow-lg">
-            <div className="text-4xl mb-4">🗺️</div>
-            <h3 className="text-xl font-bold text-gray-800 mb-2">
-              Get Personalized Roadmap
-            </h3>
-            <p className="text-gray-600">
-              Receive custom action steps based on your situation and goals
+          <div className="bg-white rounded-lg shadow p-6">
+            <p className="text-sm text-gray-600 mb-2">Net Worth</p>
+            <p className={`text-2xl font-bold ${summary?.netWorth >= 0 ? 'text-accent-600' : 'text-red-600'}`}>
+              ${summary?.netWorth?.toFixed(2) || '0.00'}
+            </p>
+          </div>
+          <div className="bg-white rounded-lg shadow p-6">
+            <p className="text-sm text-gray-600 mb-2">Items Tracked</p>
+            <p className="text-2xl font-bold text-primary-600">
+              {summary?.itemCount || 0}
             </p>
           </div>
         </div>
 
-        {/* Call to Action */}
-        <div className="mt-20 text-center">
-          <h2 className="text-3xl font-bold text-white mb-4">
-            Anyone Can Master Their Money Game
-          </h2>
-          <p className="text-xl text-primary-100 mb-8">
-            Financial freedom isn't just for the wealthy. Start your journey today.
-          </p>
-          <Link 
-            to="/register"
-            className="inline-block bg-accent-500 text-white px-10 py-4 rounded-lg text-lg font-semibold hover:bg-accent-600 transition shadow-lg"
+        {/* Quick Actions */}
+        <div className="grid md:grid-cols-3 gap-6 mb-8">
+          <Link
+            to="/financial-items"
+            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition"
           >
-            Create Free Account
+            <div className="text-3xl mb-3">💰</div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Manage Financial Items</h3>
+            <p className="text-gray-600">Track your assets and liabilities</p>
+          </Link>
+
+          <Link
+            to="/goals"
+            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition"
+          >
+            <div className="text-3xl mb-3">🎯</div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">Set Goals</h3>
+            <p className="text-gray-600">Define your financial objectives</p>
+          </Link>
+
+          <Link
+            to="/roadmap"
+            className="bg-white rounded-lg shadow p-6 hover:shadow-lg transition"
+          >
+            <div className="text-3xl mb-3">🗺️</div>
+            <h3 className="text-xl font-bold text-gray-900 mb-2">View Roadmap</h3>
+            <p className="text-gray-600">Get your personalized action plan</p>
           </Link>
         </div>
+
+        {/* Roadmap Preview or CTA */}
+        {roadmap ? (
+          <div className="bg-white rounded-lg shadow p-6">
+            <h3 className="text-xl font-bold text-gray-900 mb-4">Your Roadmap Preview</h3>
+            <div className="space-y-3">
+              {roadmap.steps.slice(0, 3).map((step) => (
+                <div key={step.stepNumber} className="flex items-start">
+                  <div className="flex-shrink-0 w-8 h-8 bg-primary-500 text-white rounded-full flex items-center justify-center font-bold mr-3">
+                    {step.stepNumber}
+                  </div>
+                  <div>
+                    <p className="font-semibold text-gray-900">{step.title}</p>
+                    <p className="text-sm text-gray-600">{step.description}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <Link
+              to="/roadmap"
+              className="mt-4 inline-block text-primary-600 font-medium hover:text-primary-700"
+            >
+              View Full Roadmap →
+            </Link>
+          </div>
+        ) : (
+          <div className="bg-gradient-to-r from-primary-500 to-primary-600 rounded-lg shadow p-8 text-white text-center">
+            <h3 className="text-2xl font-bold mb-3">Ready to start your journey?</h3>
+            <p className="mb-6 text-primary-100">
+              Add your financial items and set goals to generate your personalized roadmap
+            </p>
+            <Link
+              to="/financial-items"
+              className="inline-block bg-white text-primary-600 px-6 py-3 rounded-lg font-semibold hover:bg-gray-100 transition"
+            >
+              Get Started
+            </Link>
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default Landing;
+export default Dashboard;

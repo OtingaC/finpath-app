@@ -2,6 +2,7 @@ import { useState, useEffect, useContext } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import AuthContext from '../../context/AuthContext';
 import { getFinancialItems, createFinancialItem, updateFinancialItem, deleteFinancialItem } from '../../utils/api';
+import { formatCurrency } from '../../utils/formatCurrency';
 
 const FinancialItems = () => {
   const { user, logout } = useContext(AuthContext);
@@ -182,16 +183,16 @@ const FinancialItems = () => {
           <div className="grid md:grid-cols-4 gap-6 mb-8">
             <div className="bg-white rounded-lg shadow p-6">
               <p className="text-sm text-gray-600 mb-2">Total Assets</p>
-              <p className="text-2xl font-bold text-accent-600">KES {summary.totalAssets.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-accent-600">{formatCurrency(summary.totalAssets)}</p>
             </div>
             <div className="bg-white rounded-lg shadow p-6">
               <p className="text-sm text-gray-600 mb-2">Total Liabilities</p>
-              <p className="text-2xl font-bold text-red-600">KES {summary.totalLiabilities.toFixed(2)}</p>
+              <p className="text-2xl font-bold text-red-600">{formatCurrency(summary.totalLiabilities)}</p>
             </div>
             <div className="bg-white rounded-lg shadow p-6">
               <p className="text-sm text-gray-600 mb-2">Net Worth</p>
               <p className={`text-2xl font-bold ${summary.netWorth >= 0 ? 'text-accent-600' : 'text-red-600'}`}>
-                KES {summary.netWorth.toFixed(2)}
+                {formatCurrency(summary.netWorth)}
               </p>
             </div>
             <div className="bg-white rounded-lg shadow p-6">
@@ -222,9 +223,9 @@ const FinancialItems = () => {
                         <button onClick={() => handleDelete(item._id)} className="text-red-600 hover:text-red-700">Delete</button>
                       </div>
                     </div>
-                    <p className="text-2xl font-bold text-accent-600">KES {item.value.toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-accent-600">{formatCurrency(item.value)}</p>
                     {item.monthlyImpact > 0 && (
-                      <p className="text-sm text-gray-600 mt-1">Monthly income: +KES {item.monthlyImpact.toFixed(2)}</p>
+                      <p className="text-sm text-gray-600 mt-1">Monthly income: +{formatCurrency(item.monthlyImpact)}</p>
                     )}
                   </div>
                 ))
@@ -251,7 +252,7 @@ const FinancialItems = () => {
                         <button onClick={() => handleDelete(item._id)} className="text-red-600 hover:text-red-700">Delete</button>
                       </div>
                     </div>
-                    <p className="text-2xl font-bold text-red-600">KES {item.value.toFixed(2)}</p>
+                    <p className="text-2xl font-bold text-red-600">{formatCurrency(item.value)}</p>
                     {item.interestRate > 0 && (
                       <p className="text-sm text-gray-600 mt-1">Interest rate: {item.interestRate}%</p>
                     )}
