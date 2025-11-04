@@ -1,3 +1,4 @@
+console.log('API URL:', process.env.REACT_APP_API_URL);
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import ProtectedRoute from './components/common/ProtectedRoute';
