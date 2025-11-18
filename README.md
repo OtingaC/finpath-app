@@ -6,7 +6,7 @@
 
 - **Frontend Application**: [https://finpath-app-iota.vercel.app](https://finpath-app-iota.vercel.app)
 - **Backend API**: [https://finpath-app.onrender.com](https://finpath-app.onrender.com)
-- **Pitch Deck**: [https://www.canva.com/design/DAG5AeyekYE/Dr9NO27St7csSmwFzZ2r3g/edit?utm_content=DAG5AeyekYE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton](./pitch-deck/FinPath-Pitch-Deck.pdf)
+- **Pitch Deck**: [View on Canva](https://www.canva.com/design/DAG5AeyekYE/Dr9NO27St7csSmwFzZ2r3g/edit?utm_content=DAG5AeyekYE&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ---
 
